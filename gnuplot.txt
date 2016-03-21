@@ -1,0 +1,6 @@
+set title "CDF plot for MT"
+set xlabel "Throughput (Mbps)"
+set ylabel "Cumlative Percent"
+set ytics "10"
+set xtics "1"
+plot "RrGraph.txt" using 2:1 title "Speed 0mps" with lines, "RrGraph.txt" using 3:1 title "Speed 5mps" with lines
