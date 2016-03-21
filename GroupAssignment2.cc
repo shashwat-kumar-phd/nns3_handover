@@ -119,7 +119,7 @@ int main (int argc, char *argv[])
   //cmd.AddValue("interPacketInterval", "Inter packet interval [ms])", interPacketInterval);
   cmd.AddValue("schedularType","Type to the MAC Schedular",schedularType);
   cmd.AddValue("fullBufferFlag","Full buffer condition or not",fullBufferFlag);
-  cmd.AddValue("speed","Speed of the UEs",speed);
+  cmd.AddValue("speed","Speed of the UEs in m/sec",speed);
   cmd.Parse(argc, argv);
 
   ConfigStore config;
