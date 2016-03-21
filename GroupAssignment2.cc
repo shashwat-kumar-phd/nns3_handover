@@ -101,12 +101,11 @@ NS_LOG_COMPONENT_DEFINE ("EpcFirstExample");
 
 int main (int argc, char *argv[])
 {
-  uint16_t numberOfeNodeBs = 4;
-  uint16_t numberOfUEs = 20;
+  uint16_t numberOfeNodeBs = 8;
+  uint16_t numberOfUEs = 24;
   double simTime = 10.0;
   double interPacketInterval = 1.0;
-  std::string schedularType="ns3::RrFfMacScheduler";
-  std::string speed="ns3::ConstantRandomVariable[Constant=0]";
+  std::string speed="ns3::ConstantRandomVariable[Constant=10.0]";
   bool fullBufferFlag=true;
   uint32_t rBs=50;
   uint32_t packetSize=1500;
@@ -117,9 +116,8 @@ int main (int argc, char *argv[])
   CommandLine cmd;
   cmd.AddValue("simTime", "Total duration of the simulation [s])", simTime);
   //cmd.AddValue("interPacketInterval", "Inter packet interval [ms])", interPacketInterval);
-  cmd.AddValue("schedularType","Type to the MAC Schedular",schedularType);
-  cmd.AddValue("fullBufferFlag","Full buffer condition or not",fullBufferFlag);
-  cmd.AddValue("speed","Speed of the UEs in m/sec",speed);
+  //cmd.AddValue("fullBufferFlag","Full buffer condition or not",fullBufferFlag);
+  cmd.AddValue("speed","Speed of the UEs",speed);
   cmd.Parse(argc, argv);
 
   ConfigStore config;
@@ -130,26 +128,33 @@ int main (int argc, char *argv[])
         interPacketInterval=10;
   }
 
-  std::cout<<"\nSchedular Type :: "<<schedularType;
   std::cout<<"\nFull buffer flag :: "<<fullBufferFlag;
   std::cout<<"\nSpeed :: "<<speed<<std::endl;
 
 
 
 
-  NodeContainer ueNodes1,ueNodes2,ueNodes3,ueNodes4;
+  NodeContainer ueNodes1,ueNodes2,ueNodes3,ueNodes4,ueNodes5,ueNodes6,ueNodes7,ueNodes8;
   NodeContainer enbNodes;
   enbNodes.Create(numberOfeNodeBs);
-  ueNodes1.Create(numberOfUEs/4);
-  ueNodes2.Create(numberOfUEs/4);
-  ueNodes3.Create(numberOfUEs/4);
-  ueNodes4.Create(numberOfUEs/4);
+  ueNodes1.Create(numberOfUEs/numberOfeNodeBs);
+  ueNodes2.Create(numberOfUEs/numberOfeNodeBs);
+  ueNodes3.Create(numberOfUEs/numberOfeNodeBs);
+  ueNodes4.Create(numberOfUEs/numberOfeNodeBs);
+  ueNodes5.Create(numberOfUEs/numberOfeNodeBs);
+  ueNodes6.Create(numberOfUEs/numberOfeNodeBs);
+  ueNodes7.Create(numberOfUEs/numberOfeNodeBs);
+  ueNodes8.Create(numberOfUEs/numberOfeNodeBs);
   //Placing eNB
   Ptr<ListPositionAllocator> enbpositionAlloc = CreateObject<ListPositionAllocator> ();
   enbpositionAlloc->Add (Vector(0, 0, 0));
-  	enbpositionAlloc->Add (Vector(1000, 0, 0));
-	enbpositionAlloc->Add (Vector(1000,1000, 0));
-	enbpositionAlloc->Add (Vector(0,1000, 0));
+  	enbpositionAlloc->Add (Vector(250, 0, 0));
+	enbpositionAlloc->Add (Vector(500,0, 0));
+	enbpositionAlloc->Add (Vector(750,0, 0));
+	enbpositionAlloc->Add (Vector(0,250, 0));
+	enbpositionAlloc->Add (Vector(250,250, 0));
+	enbpositionAlloc->Add (Vector(500,250, 0));
+	enbpositionAlloc->Add (Vector(750,250, 0));
 
   MobilityHelper mobility;
   mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
@@ -161,41 +166,77 @@ int main (int argc, char *argv[])
   ue1mobility.SetPositionAllocator("ns3::RandomDiscPositionAllocator",
                                           "X",DoubleValue(0.0),
                                           "Y",DoubleValue(0.0),
-                                          "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=500]"));
+                                          "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"));
   ue1mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
-                                 "Bounds", RectangleValue (Rectangle (-1500, 2500, -1500, 2500)),"Speed", StringValue (speed));
+                                 "Bounds", RectangleValue (Rectangle (-250, 1000, -250, 500)),"Speed", StringValue (speed));
   ue1mobility.Install(ueNodes1);
 
   //Postion of UEs Attach to eNB2
   MobilityHelper ue2mobility;
   ue2mobility.SetPositionAllocator("ns3::RandomDiscPositionAllocator",
-                                    "X",DoubleValue(1000.0),
-                                    "Y",DoubleValue(0.0),
-                                    "Rho",StringValue("ns3::UniformRandomVariable[Min=0.0|Max=500.0]"));
+                                           "X",DoubleValue(250.0),
+                                           "Y",DoubleValue(0.0),
+                                           "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"));
    ue2mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
-                                 "Bounds", RectangleValue (Rectangle (-1500, 2500, -1500, 2500)),"Speed", StringValue (speed));
-  ue2mobility.Install(ueNodes2);
+                                  "Bounds", RectangleValue (Rectangle (-250, 1000, -250, 500)),"Speed", StringValue (speed));
+   ue2mobility.Install(ueNodes2);
 
   //Postion of UEs Attach to eNB3
   MobilityHelper ue3mobility;
   ue3mobility.SetPositionAllocator("ns3::RandomDiscPositionAllocator",
-                                    "X",DoubleValue(1000.0),
-                                    "Y",DoubleValue(1000.0),
-                                    "Rho",StringValue("ns3::UniformRandomVariable[Min=0.0|Max=500.0]"));
-  ue3mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
-                                 "Bounds", RectangleValue (Rectangle (-1500, 2500, -1500, 2500)),"Speed", StringValue (speed));
-  ue3mobility.Install(ueNodes3);
+                                           "X",DoubleValue(500.0),
+                                           "Y",DoubleValue(0.0),
+                                           "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"));
+   ue3mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
+                                  "Bounds", RectangleValue (Rectangle (-250, 1000, -250, 500)),"Speed", StringValue (speed));
+   ue3mobility.Install(ueNodes3);
 
   //Postion of UEs Attach to eNB4
   MobilityHelper ue4mobility;
   ue4mobility.SetPositionAllocator("ns3::RandomDiscPositionAllocator",
-                                    "X",DoubleValue(0.0),
-                                    "Y",DoubleValue(1000.0),
-                                    "Rho",StringValue("ns3::UniformRandomVariable[Min=0.0|Max=500.0]"));
-  ue4mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
-                                 "Bounds", RectangleValue (Rectangle (-1500, 2500, -1500, 2500)),"Speed", StringValue (speed));
-  ue4mobility.Install(ueNodes4);
+                                           "X",DoubleValue(750.0),
+                                           "Y",DoubleValue(0.0),
+                                           "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"));
+   ue4mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
+                                  "Bounds", RectangleValue (Rectangle (-250, 1000, -250, 500)),"Speed", StringValue (speed));
+   ue4mobility.Install(ueNodes4);
 
+   MobilityHelper ue5mobility;
+   ue5mobility.SetPositionAllocator("ns3::RandomDiscPositionAllocator",
+		   	   	   	   	   	   	   	   	   "X",DoubleValue(750.0),
+		   	   	   	   	   	   	   	   	   "Y",DoubleValue(250),
+		   	   	   	   	   	   	   	   	   "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=100"));
+   ue5mobility.SetMobilityModel("n3::RandomWalk2dMobilityModel",
+		   	   	   	   	   	   	   "Bounds",RectangleValue(Rectangle(-250,1000,-250,500)),"Speed",StringValue(speed));
+   ue5mobility.Install(ueNodes5);
+
+   MobilityHelper ue6mobility;
+   ue6mobility.SetPositionAllocator("ns3::RandomDiscPositionAllocator",
+									   "X",DoubleValue(500.0),
+									   "Y",DoubleValue(250),
+									   "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=100"));
+ 	ue6mobility.SetMobilityModel("n3::RandomWalk2dMobilityModel",
+							   "Bounds",RectangleValue(Rectangle(-250,1000,-250,500)),"Speed",StringValue(speed));
+ 	ue6mobility.Install(ueNodes6);
+
+   MobilityHelper ue7mobility;
+   ue7mobility.SetPositionAllocator("ns3::RandomDiscPositionAllocator",
+										   "X",DoubleValue(250.0),
+										   "Y",DoubleValue(250),
+										   "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=100"));
+   ue7mobility.SetMobilityModel("n3::RandomWalk2dMobilityModel",
+								   "Bounds",RectangleValue(Rectangle(-250,1000,-250,500)),"Speed",StringValue(speed));
+   ue7mobility.Install(ueNodes7);
+
+
+   MobilityHelper ue8mobility;
+ ue8mobility.SetPositionAllocator("ns3::RandomDiscPositionAllocator",
+									   "X",DoubleValue(0.0),
+									   "Y",DoubleValue(250),
+									   "Rho",StringValue("ns3::UniformRandomVariable[Min=0|Max=100"));
+ ue8mobility.SetMobilityModel("n3::RandomWalk2dMobilityModel",
+							   "Bounds",RectangleValue(Rectangle(-250,1000,-250,500)),"Speed",StringValue(speed));
+ ue8mobility.Install(ueNodes8);
 
 
   Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
@@ -203,7 +244,7 @@ int main (int argc, char *argv[])
   lteHelper->SetEpcHelper (epcHelper);
   lteHelper->SetEnbDeviceAttribute("DlBandwidth",UintegerValue(rBs));
   lteHelper->SetEnbDeviceAttribute("UlBandwidth",UintegerValue(rBs));
-  lteHelper->SetSchedulerType (schedularType);
+
 
   lteHelper->SetHandoverAlgorithmType ("ns3::A2A4RsrqHandoverAlgorithm");
   lteHelper->SetHandoverAlgorithmAttribute ("ServingCellThreshold",UintegerValue (15));
@@ -251,29 +292,46 @@ int main (int argc, char *argv[])
   for(int i=0;i<numberOfeNodeBs;i++)
   {
 	  Ptr<LteEnbPhy> enbPhy=enbLteDevs.Get(i)->GetObject<LteEnbNetDevice>()->GetPhy();
-	  enbPhy->SetTxPower(30);
+	  enbPhy->SetTxPower(20);
   }
 
   NetDeviceContainer ueLteDevs1 = lteHelper->InstallUeDevice (ueNodes1);
   NetDeviceContainer ueLteDevs2 = lteHelper->InstallUeDevice (ueNodes2);
   NetDeviceContainer ueLteDevs3 = lteHelper->InstallUeDevice (ueNodes3);
   NetDeviceContainer ueLteDevs4 = lteHelper->InstallUeDevice (ueNodes4);
+  NetDeviceContainer ueLteDevs5 = lteHelper->InstallUeDevice (ueNodes5);
+  NetDeviceContainer ueLteDevs6 = lteHelper->InstallUeDevice (ueNodes6);
+  NetDeviceContainer ueLteDevs7 = lteHelper->InstallUeDevice (ueNodes7);
+  NetDeviceContainer ueLteDevs8 = lteHelper->InstallUeDevice (ueNodes8);
+
 
   // Install the IP stack on the UEs
   internet.Install (ueNodes1);
   internet.Install (ueNodes2);
   internet.Install (ueNodes3);
   internet.Install (ueNodes4);
+  internet.Install (ueNodes5);
+  internet.Install (ueNodes6);
+  internet.Install (ueNodes7);
+  internet.Install (ueNodes8);
 
   Ipv4InterfaceContainer ueIpIface1;
   Ipv4InterfaceContainer ueIpIface2;
   Ipv4InterfaceContainer ueIpIface3;
   Ipv4InterfaceContainer ueIpIface4;
+  Ipv4InterfaceContainer ueIpIface5;
+  Ipv4InterfaceContainer ueIpIface6;
+  Ipv4InterfaceContainer ueIpIface7;
+  Ipv4InterfaceContainer ueIpIface8;
 
   ueIpIface1= epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs1));
   ueIpIface2= epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs2));
   ueIpIface3= epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs3));
   ueIpIface4= epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs4));
+  ueIpIface5= epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs5));
+  ueIpIface6= epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs6));
+  ueIpIface7= epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs7));
+  ueIpIface8= epcHelper->AssignUeIpv4Address (NetDeviceContainer (ueLteDevs8));
 
   // Assign IP address to UEs, and install applications
   for (uint32_t u = 0; u < ueNodes1.GetN (); ++u)
@@ -304,6 +362,34 @@ int main (int argc, char *argv[])
       Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ueNode->GetObject<Ipv4> ());
       ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
     }
+  for (uint32_t u = 0; u < ueNodes5.GetN (); ++u)
+      {
+        Ptr<Node> ueNode = ueNodes5.Get (u);
+        // Set the default gateway for the UE
+        Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ueNode->GetObject<Ipv4> ());
+        ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
+      }
+  for (uint32_t u = 0; u < ueNodes6.GetN (); ++u)
+      {
+        Ptr<Node> ueNode = ueNodes6.Get (u);
+        // Set the default gateway for the UE
+        Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ueNode->GetObject<Ipv4> ());
+        ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
+      }
+  for (uint32_t u = 0; u < ueNodes7.GetN (); ++u)
+      {
+        Ptr<Node> ueNode = ueNodes7.Get (u);
+        // Set the default gateway for the UE
+        Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ueNode->GetObject<Ipv4> ());
+        ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
+      }
+  for (uint32_t u = 0; u < ueNodes8.GetN (); ++u)
+      {
+        Ptr<Node> ueNode = ueNodes8.Get (u);
+        // Set the default gateway for the UE
+        Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ueNode->GetObject<Ipv4> ());
+        ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
+      }
 
 
   // Attach all UEs to eNodeB
@@ -311,7 +397,10 @@ int main (int argc, char *argv[])
   lteHelper->Attach(ueLteDevs2,enbLteDevs.Get(1));
   lteHelper->Attach(ueLteDevs3,enbLteDevs.Get(2));
   lteHelper->Attach(ueLteDevs4,enbLteDevs.Get(3));
-
+  lteHelper->Attach(ueLteDevs5,enbLteDevs.Get(4));
+  lteHelper->Attach(ueLteDevs6,enbLteDevs.Get(5));
+  lteHelper->Attach(ueLteDevs7,enbLteDevs.Get(6));
+  lteHelper->Attach(ueLteDevs8,enbLteDevs.Get(7));
 
 //  lteHelper->AddX2Interface (enbNodes);
 
@@ -391,15 +480,15 @@ int main (int argc, char *argv[])
           }
 
   //-----------------REM Code------------------------
-//  Ptr<RadioEnvironmentMapHelper> remHelper = CreateObject<RadioEnvironmentMapHelper> ();
-//  remHelper->SetAttribute ("ChannelPath", StringValue ("/ChannelList/1"));
-//  remHelper->SetAttribute ("OutputFile", StringValue ("rem.out"));
-//  remHelper->SetAttribute ("XMin", DoubleValue (-1500.0));
-//  remHelper->SetAttribute ("XMax", DoubleValue (2500.0));
-//  remHelper->SetAttribute ("YMin", DoubleValue (-1500.0));
-//  remHelper->SetAttribute ("YMax", DoubleValue (2500.0));
-//  remHelper->SetAttribute ("Z", DoubleValue (0.0));
-//  remHelper->Install ();
+  Ptr<RadioEnvironmentMapHelper> remHelper = CreateObject<RadioEnvironmentMapHelper> ();
+  remHelper->SetAttribute ("ChannelPath", StringValue ("/ChannelList/1"));
+  remHelper->SetAttribute ("OutputFile", StringValue ("rem.out"));
+  remHelper->SetAttribute ("XMin", DoubleValue (-1500.0));
+  remHelper->SetAttribute ("XMax", DoubleValue (2500.0));
+  remHelper->SetAttribute ("YMin", DoubleValue (-1500.0));
+  remHelper->SetAttribute ("YMax", DoubleValue (2500.0));
+  remHelper->SetAttribute ("Z", DoubleValue (0.0));
+  remHelper->Install ();
   //--------------------------------------------------------------------
 
   serverApps.Start (Seconds (0.01));
